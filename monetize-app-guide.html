@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>作ったアプリを収益化する方法</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@500;700&display=swap">
+<style>
+/* 構成の考え方 縦に流れる一枚もの。冒頭に動く3ルート図、続けて手取りの比較、作ったものからの絞り込み、販売先の詳細、出品の流れ、リンク集。 */
+:root{
+  --bg:#F5F6F3; --surface:#FFFFFF; --surface2:#EDF0EB; --ink:#11171C; --ink2:#46515A; --ink3:#66717A; --line:#D9DED8;
+  --accent:#0B5D4F; --accent-ink:#FFFFFF; --accent-soft:#DCEBE5;
+  --gold:#8A6226; --gold-soft:#F0E6D2;
+  --yel-bg:#17160D; --yel-fg:#FFD84D;
+  --font-display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --font-body:"Noto Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --font-mono:"DM Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C1114; --surface:#141B1F; --surface2:#1A2328; --ink:#EAEEEA; --ink2:#AAB5B0; --ink3:#87938D; --line:#27323A;
+    --accent:#5FD0B3; --accent-ink:#06201A; --accent-soft:#15322C;
+    --gold:#D8B574; --gold-soft:#2D2616;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C1114; --surface:#141B1F; --surface2:#1A2328; --ink:#EAEEEA; --ink2:#AAB5B0; --ink3:#87938D; --line:#27323A;
+  --accent:#5FD0B3; --accent-ink:#06201A; --accent-soft:#15322C;
+  --gold:#D8B574; --gold-soft:#2D2616;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.85;-webkit-text-size-adjust:100%}
+a{color:var(--accent)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1080px;margin-inline:auto;padding-inline:clamp(16px,4vw,40px)}
+.sec{padding-block:clamp(56px,9vw,104px);scroll-margin-top:56px}
+.sec + .sec{border-top:1px solid var(--line)}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;margin:0;text-wrap:balance}
+h2{font-size:clamp(1.55rem,3.4vw,2.2rem);line-height:1.4}
+h3{font-size:1.25rem;line-height:1.5}
+h4{margin:0;font-family:var(--font-body);font-size:.75rem;font-weight:700;letter-spacing:.1em;color:var(--ink3)}
+p{margin:0}
+.kicker{font-family:var(--font-mono);font-size:.75rem;letter-spacing:.14em;color:var(--gold);font-weight:500}
+.sec-head{display:grid;gap:12px;margin-bottom:clamp(28px,5vw,48px);max-width:44rem}
+.sec-head p{color:var(--ink2)}
+.small{font-size:.8125rem;color:var(--ink3);line-height:1.7}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;gap:16px;min-height:52px}
+.brand{font-family:var(--font-display);font-weight:700;white-space:nowrap}
+.nav-links{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{white-space:nowrap;padding:6px 12px;border-radius:999px;font-size:.875rem;color:var(--ink2);text-decoration:none}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a.on{background:var(--accent-soft);color:var(--accent);font-weight:500}
+
+/* hero */
+.copyright{display:inline-block;margin-bottom:22px;padding:8px 18px;border-radius:999px;background:var(--yel-bg);color:var(--yel-fg);font-size:1rem;font-weight:700;letter-spacing:.06em;line-height:1.6}
+.hero{padding-block:clamp(48px,8vw,96px) clamp(24px,4vw,40px)}
+.hero h1{font-size:clamp(2.1rem,6.2vw,4rem);line-height:1.22;letter-spacing:.01em;margin-top:14px}
+.lede{margin-top:22px;max-width:40rem;color:var(--ink2);font-size:1.0625rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:26px;font-size:.8125rem;color:var(--ink3)}
+.hero-meta span::before{content:"▶ ";color:var(--gold)}
+
+/* route diagram */
+.route-wrap{margin-top:12px}
+.svg-wrap{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:clamp(12px,2vw,24px)}
+#routeSvg{display:block;width:100%;height:auto}
+.t-d{font-family:var(--font-display);font-weight:700}
+.t-b{font-family:var(--font-body)}
+.node{fill:var(--surface2);stroke:var(--line);stroke-width:1.5}
+.node-t{fill:var(--ink);font-size:19px}
+.node-s{fill:var(--ink3);font-size:12px}
+.lane{cursor:pointer;transition:opacity .3s}
+.lane .box{fill:var(--surface);stroke:var(--line);stroke-width:1.5;transition:stroke .3s,fill .3s}
+.lane .rail{fill:none;stroke:var(--line);stroke-width:2;stroke-dasharray:4 7;animation:flow 1.6s linear infinite;transition:stroke .3s}
+.lane .dot{fill:var(--ink3);transition:fill .3s}
+.lane .lt{fill:var(--ink);font-size:17px}
+.lane .ls{fill:var(--ink2);font-size:12.5px}
+.lane .lg{fill:var(--gold);font-size:12.5px;font-weight:500}
+.lane:hover .box{stroke:var(--ink3)}
+.lane.active .box{stroke:var(--accent);stroke-width:2.5;fill:var(--accent-soft)}
+.lane.active .rail{stroke:var(--accent)}
+.lane.active .dot{fill:var(--accent)}
+.lane.dim{opacity:.42}
+@keyframes flow{to{stroke-dashoffset:-22}}
+
+.m-route{position:relative;display:grid;gap:14px;padding-left:40px}
+.m-route::before{content:"";position:absolute;left:15px;top:20px;bottom:20px;border-left:2px dashed var(--line)}
+.m-route::after{content:"";position:absolute;left:10px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--accent);animation:drop 3.6s ease-in-out infinite}
+@keyframes drop{0%{top:20px;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:calc(100% - 32px);opacity:0}}
+.m-node{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-family:var(--font-display);font-weight:700;text-align:center}
+.m-lanes{display:grid;gap:12px}
+.m-lane{display:grid;gap:2px;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;min-width:0}
+.m-lane b{font-family:var(--font-display);font-size:1.0625rem}
+.m-lane span{font-size:.8125rem;color:var(--ink2)}
+.m-lane i{font-style:normal;font-size:.8125rem;color:var(--gold);font-weight:500}
+.m-lane[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+@media (min-width:760px){.m-route{display:none}}
+@media (max-width:759px){.svg-wrap{display:none}}
+
+.panel{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:clamp(20px,3vw,32px);display:grid;gap:22px}
+.panel-head{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.tag{font-size:.75rem;font-weight:500;color:var(--gold);background:var(--gold-soft);padding:3px 10px;border-radius:999px}
+.panel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:22px}
+.panel-grid > div{display:grid;gap:8px;align-content:start;min-width:0}
+.panel ul{margin:0;padding-left:1.1em;display:grid;gap:4px;font-size:.9375rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-link{display:inline-block;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface2);font-size:.875rem;color:var(--ink);text-decoration:none}
+.chip-link:hover{border-color:var(--accent);color:var(--accent)}
+.ease{display:flex;gap:6px;align-items:center}
+.ease i{width:28px;height:8px;border-radius:99px;background:var(--line)}
+.ease i.on{background:var(--accent)}
+.ease span{font-size:.8125rem;color:var(--ink2);margin-left:6px}
+
+/* simulator */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:clamp(18px,3vw,32px)}
+.ctrls{display:grid;grid-template-columns:2fr 1fr;gap:20px 32px;align-items:end}
+@media (max-width:640px){.ctrls{grid-template-columns:1fr}}
+.ctrl{display:grid;gap:8px;min-width:0}
+.ctrl label{font-size:.8125rem;font-weight:700;color:var(--ink2)}
+.ctrl-row{display:flex;align-items:center;gap:14px}
+input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:28px}
+input[type=number]{width:7.5rem;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--ink);font-family:var(--font-mono);font-size:1rem;font-variant-numeric:tabular-nums}
+.sim-sum{margin-top:22px;padding:14px 18px;background:var(--accent-soft);border-radius:14px;color:var(--ink);font-size:.9375rem}
+.sim-sum b{font-family:var(--font-mono);font-weight:500;color:var(--accent)}
+.rows{margin-top:10px}
+.row{display:grid;grid-template-columns:170px 1fr 200px;gap:8px 18px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+@media (max-width:760px){.row{grid-template-columns:1fr}.nums{text-align:left!important}}
+.row-name b{font-family:var(--font-display);font-size:1.0625rem}
+.row-name small{display:block;font-family:var(--font-mono);font-size:.6875rem;color:var(--ink3);line-height:1.5}
+.badge-best{display:inline-block;margin-left:8px;font-family:var(--font-body);font-size:.6875rem;font-weight:700;color:var(--gold);background:var(--gold-soft);padding:1px 8px;border-radius:99px;vertical-align:2px}
+.bar{height:14px;border-radius:99px;background:var(--gold);overflow:hidden;display:flex}
+.keep{background:var(--accent);height:100%;width:0;transition:width .55s cubic-bezier(.2,.7,.2,1)}
+.nums{font-family:var(--font-mono);font-size:.8125rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink2);line-height:1.6}
+.nums b{color:var(--accent);font-size:1.0625rem;font-weight:500}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:18px;font-size:.8125rem;color:var(--ink2)}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--accent)}
+.legend span + span::before{background:var(--gold)}
+
+/* match */
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pill{padding:10px 18px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;font-size:.9375rem;transition:background .2s,border-color .2s}
+.pill:hover{border-color:var(--accent)}
+.pill[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:500}
+.picks{display:grid;gap:12px;margin-top:26px}
+.pick{display:grid;grid-template-columns:96px 1fr auto;gap:8px 20px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 20px;animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.pick:nth-child(2){animation-delay:.07s}.pick:nth-child(3){animation-delay:.14s}
+.pick.first{border-color:var(--accent);background:var(--accent-soft)}
+.rank{font-size:.8125rem;font-weight:700;color:var(--gold)}
+.pick.first .rank{color:var(--accent)}
+.pick h3{font-size:1.125rem}
+.pick p{font-size:.9375rem;color:var(--ink2)}
+@media (max-width:640px){.pick{grid-template-columns:1fr}}
+.go{white-space:nowrap;font-size:.875rem;font-weight:500;text-decoration:none;padding:6px 14px;border-radius:99px;border:1px solid var(--accent)}
+.go:hover{background:var(--accent);color:var(--accent-ink)}
+
+/* cards */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,470px),1fr));gap:22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:clamp(20px,3vw,30px);display:grid;gap:16px;align-content:start;min-width:0;scroll-margin-top:68px}
+.card[hidden]{display:none}
+.card-top{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.chip-k{font-size:.75rem;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:99px}
+.card-tag{color:var(--ink2);font-size:.9375rem;margin-top:-8px}
+.fee{display:grid;grid-template-columns:auto 1fr;gap:2px 16px;align-items:end;background:var(--surface2);border-radius:14px;padding:12px 16px}
+.fee-v{font-family:var(--font-mono);font-size:1.5rem;color:var(--gold);font-weight:500;line-height:1.3;font-variant-numeric:tabular-nums}
+.fee-l{font-size:.75rem;color:var(--ink3);font-weight:700;letter-spacing:.1em;align-self:center}
+.fee-n{grid-column:1/-1;font-size:.8125rem;color:var(--ink2);line-height:1.6}
+.card ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:.9375rem}
+.feat li{position:relative;padding-left:1.3em}
+.feat li::before{content:"▶";position:absolute;left:0;top:.05em;font-size:.65em;line-height:2.4;color:var(--accent)}
+.caution{font-size:.8125rem;color:var(--gold);background:var(--gold-soft);padding:8px 12px;border-radius:10px;line-height:1.6}
+.eg{display:flex!important;flex-wrap:wrap;gap:8px!important}
+.eg li{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:5px 12px;font-size:.875rem;line-height:1.6}
+.steps{counter-reset:s;margin:0;padding:0;list-style:none;display:grid;gap:0;position:relative}
+.steps li{counter-increment:s;position:relative;padding:2px 0 14px 40px;font-size:.9375rem}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--font-mono);font-size:.8125rem;display:grid;place-items:center;font-weight:500}
+.steps li::after{content:"";position:absolute;left:12px;top:30px;bottom:4px;border-left:2px solid var(--line)}
+.steps li:last-child{padding-bottom:0}
+.steps li:last-child::after{display:none}
+.card-links{display:flex;flex-wrap:wrap;gap:8px 16px;padding-top:6px;border-top:1px solid var(--line);font-size:.875rem}
+.card-links a{padding-top:10px}
+
+/* timeline */
+.tl{position:relative;padding-left:64px;display:grid;gap:34px;max-width:46rem}
+.tl::before{content:"";position:absolute;left:21px;top:20px;bottom:20px;width:3px;border-radius:3px;background:var(--line)}
+.tl-fill{position:absolute;left:21px;top:20px;width:3px;border-radius:3px;background:var(--accent);height:0;transition:height .25s linear}
+.tl-step{position:relative;display:grid;gap:4px}
+.tl-step .n{position:absolute;left:-64px;top:0;width:44px;height:44px;border-radius:50%;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;font-family:var(--font-mono);font-weight:500;color:var(--ink3);transition:all .3s}
+.tl-step.passed .n{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tl-step h3{font-size:1.1875rem;line-height:44px}
+.tl-step p{color:var(--ink2);font-size:.9375rem}
+
+/* combos */
+.combos{display:grid;gap:16px}
+.combo{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 24px;display:grid;gap:14px}
+.combo-flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 8px}
+.node-pill{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-size:.9375rem}
+.node-pill.hi{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:500}
+.arrow{color:var(--gold);font-family:var(--font-mono);animation:pulse 1.8s ease-in-out infinite}
+.arrow:nth-of-type(2){animation-delay:.3s}
+@keyframes pulse{0%,100%{opacity:.35;transform:translateX(0)}50%{opacity:1;transform:translateX(4px)}}
+
+/* links */
+.link-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:22px}
+.lg{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px 24px;display:grid;gap:12px;align-content:start;min-width:0}
+.lg ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.lg a{display:grid;gap:0;text-decoration:none;color:var(--ink);font-size:.9375rem;line-height:1.5}
+.lg a small{font-family:var(--font-mono);font-size:.6875rem;color:var(--ink3);overflow-wrap:anywhere}
+.lg a:hover{color:var(--accent)}
+.lg a span::after{content:" ↗";color:var(--accent)}
+
+footer{border-top:1px solid var(--line);padding-block:40px 64px;color:var(--ink3)}
+footer p + p{margin-top:8px}
+
+.reveal.in{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:.4;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+body{margin:0}
+</style>
+</head>
+<body>
+
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <span class="brand">収益化マップ</span>
+    <nav class="nav-links" aria-label="ページ内の移動">
+      <a href="#map" data-go="map">3つの道</a>
+      <a href="#sim" data-go="sim">手取り比較</a>
+      <a href="#match" data-go="match">作ったもので選ぶ</a>
+      <a href="#platforms" data-go="platforms">販売先</a>
+      <a href="#flow" data-go="flow">出品の流れ</a>
+      <a href="#links" data-go="links">リンク</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap hero" id="top">
+  <p class="copyright">著作権はレオに属します。</p>
+  <p class="kicker">2026年10月時点の公開情報から整理</p>
+  <h1>作ったアプリを収益化する方法</h1>
+  <p class="lede">ChatGPTやClaudeで作ったアプリを、個人でも出品できる販売先に絞って比較。手数料、特徴、売るものの例、売り方のサンプルまでを一枚に集約。日本向け、海外向け、アプリストアの3つの道から選ぶ構成。</p>
+  <div class="hero-meta"><span>販売先8つ</span><span>手数料は動く比較表で確認</span><span>各項目に公式リンク付き</span></div>
+</div>
+
+<section class="sec" id="map">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">全体マップ</p>
+      <h2>売る道は3種類</h2>
+      <p>作ったアプリが買い手に届くまでのルート図。気になる道を選ぶと、代表的な販売先と手数料の目安が下に表示される。</p>
+    </div>
+    <div class="route-wrap">
+      <div class="svg-wrap" id="svgWrap"></div>
+      <div class="m-route" id="mRoute">
+        <div class="m-node">作ったアプリ</div>
+        <div class="m-lanes">
+          <button class="m-lane" data-lane="a" aria-pressed="false"><b>ダウンロード販売型</b><span>BOOTH ・ note ・ Gumroad ・ Lemon Squeezy ・ itch.io</span><i>売れた分だけ手数料</i></button>
+          <button class="m-lane" data-lane="b" aria-pressed="false"><b>アプリストア型</b><span>App Store ・ Google Play</span><i>小規模事業者向けは15%</i></button>
+          <button class="m-lane" data-lane="c" aria-pressed="false"><b>PCゲームストア型</b><span>Steam</span><i>1作品$100と手数料30%</i></button>
+        </div>
+        <div class="m-node">買い手</div>
+      </div>
+      <div class="panel" id="lanePanel" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="sim">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">手取りの比較</p>
+      <h2>1本売ると、いくら手元に残るか</h2>
+      <p>価格を動かすと、販売先ごとの手数料と手取りが即座に変わる。低価格ほど固定費の重さが目立つ点が見どころ。</p>
+    </div>
+    <div class="sim">
+      <div class="ctrls">
+        <div class="ctrl">
+          <label for="price">商品の価格(円)</label>
+          <div class="ctrl-row"><input type="range" id="price" min="300" max="10000" step="100" value="1500"><input type="number" id="priceNum" min="100" max="100000" step="100" value="1500" inputmode="numeric"></div>
+        </div>
+        <div class="ctrl">
+          <label for="fx">為替の仮定(1ドル=円)</label>
+          <div class="ctrl-row"><input type="number" id="fx" min="80" max="250" step="1" value="150" inputmode="numeric"></div>
+        </div>
+      </div>
+      <p class="sim-sum" id="simSum"></p>
+      <div class="rows" id="rows"></div>
+      <div class="legend"><span>手取り</span><span>販売先に払う手数料</span></div>
+      <p class="small" style="margin-top:14px">概算。決済会社の手数料、振込手数料、消費税、為替の差は含まない。noteはクレジットカード決済で計算、itch.ioは決済会社分として2.9%と$0.30を加算、GumroadとLemon Squeezyは公式の基本料率のみ、App StoreとGoogle Playは小規模事業者向けの15%で計算。</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="match">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">作ったもので選ぶ</p>
+      <h2>あなたのアプリは、どこで売るのが合うか</h2>
+      <p>作ったものの種類を選ぶと、相性のよい販売先が並ぶ。ここは調べた特徴をもとに組み立てた提案で、売れる保証ではない。</p>
+    </div>
+    <div class="pills" id="pills" role="group" aria-label="作ったものの種類"></div>
+    <div class="picks" id="picks" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="sec" id="platforms">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">販売先の詳細</p>
+      <h2>8つの販売先、特徴と売り方のサンプル</h2>
+      <p>それぞれの特徴、売るものの例、出品から告知までの流れをカードにまとめた。売り方のサンプルは提案であり、出品可否は各販売先の規約で決まる。</p>
+    </div>
+    <div class="filters pills" id="filters" role="group" aria-label="絞り込み">
+      <button class="pill" data-f="all" aria-pressed="true">すべて</button>
+      <button class="pill" data-f="jp" aria-pressed="false">日本向け</button>
+      <button class="pill" data-f="global" aria-pressed="false">海外向け</button>
+      <button class="pill" data-f="store" aria-pressed="false">ストア型</button>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<section class="sec" id="flow">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">出品の流れ</p>
+      <h2>出品から改善まで、6つの段階</h2>
+      <p>どの販売先でも共通する流れ。スクロールに合わせて線が伸びる。</p>
+    </div>
+    <div class="tl" id="tl">
+      <div class="tl-fill" id="tlFill"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="combos">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">組み合わせ</p>
+      <h2>目的別、販売先の組み合わせ例</h2>
+    </div>
+    <div class="combos" id="comboList"></div>
+  </div>
+</section>
+
+<section class="sec" id="links">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">関連リンク</p>
+      <h2>公式ページと根拠になった資料</h2>
+      <p>出品前の最終確認は、公式ページで。リンクは別タブで開く。</p>
+    </div>
+    <div class="link-groups" id="linkGroups"></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="small">手数料や条件は2026年10月時点の公開情報にもとづく整理。改定されることがあるため、出品前に各公式ページで最終確認が必要。</p>
+    <p class="small">売り方のサンプルと組み合わせ例は調べた特徴から組み立てた提案で、収益を保証するものではない。</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var nf = new Intl.NumberFormat('ja-JP');
+  function yen(n){ return '¥' + nf.format(Math.round(n)); }
+  function $(id){ return document.getElementById(id); }
+
+  /* ---------- データ ---------- */
+  var LANES = {
+    a:{ title:'ダウンロード販売型', tag:'売れた分だけ手数料',
+      summary:'ファイルを置いて売る道。初期費用や月額がかからない販売先が多く、出品までの距離が最も短い。ツール、テンプレート、素材、3Dモデル、ノウハウと相性がよい。',
+      ps:[['booth','BOOTH'],['note','note'],['gumroad','Gumroad'],['lemon','Lemon Squeezy'],['itch','itch.io']],
+      fees:['BOOTH 5.6% + 45円','note 事務5% + 利用料10%','Gumroad 10% + $0.50','Lemon Squeezy 5% + $0.50','itch.io 初期値10%'],
+      fit:'ツール、スクリプト、テンプレート、素材、VRChat向け3D、作り方の記事。', ease:3, easeNote:'最短で出品できる'},
+    b:{ title:'アプリストア型', tag:'小規模事業者向けは15%',
+      summary:'ストアの審査を通して配信する道。買い切り、アプリ内課金、サブスクと課金モデルを選べる。世界中のスマホユーザーに届く一方、公開までに準備と時間が要る。',
+      ps:[['apple','App Store'],['google','Google Play']],
+      fees:['App Store 手数料15%(小規模事業者向けプログラム)','App Store 年会費$99','Google Play 手数料15%(最初の100万ドルまで)','Google Play 登録料$25(1回のみ)'],
+      fit:'習慣化、家計簿、タイマー、メモなどの実用アプリ。サブスク型の学習アプリ。', ease:1, easeNote:'準備と審査に時間がかかる'},
+    c:{ title:'PCゲームストア型', tag:'1作品$100と手数料30%',
+      summary:'PCゲームの巨大市場に出す道。大型セールや世界規模の集客が強み。手数料は高めだが、売上が伸びると料率が下がる階段式。',
+      ps:[['steam','Steam']],
+      fees:['登録料 1作品$100(売上$1,000で返金)','手数料 30%','累計売上$10Mで25%、$50Mで20%'],
+      fit:'作り込んだPCゲーム、DLC、独立したサウンドトラック。', ease:2, easeNote:'ストアページの準備が要る'}
+  };
+
+  var PL = [
+    { id:'booth', kind:'jp', name:'BOOTH', region:'日本向け', tag:'pixiv運営の創作物マーケット',
+      fee:'5.6% + 45円', feeNote:'決済手数料込み。初期費用と月額は0円。売上の引き出しには振込手数料が別にかかる。',
+      feat:['pixivと地続きで、創作物を探す買い手が集まる','イラスト、漫画、3Dモデル、音楽、ボイス、フォント、テンプレート、素材まで幅広く並ぶ','VRChat向けアバターや衣装が特に盛ん','商品登録数に制限なし。ダウンロード商品も物販も同じショップで扱える','pixivのタグ検索、フォロー機能、新着通知と連動','0円設定機能で、無料配布から入る使い方もできる'],
+      eg:['VRChatのアバター、衣装、ギミック(Unityパッケージ)','AIで作ったPCツールやスクリプト','Notion、Excelのテンプレート','プロンプト集、フォント、効果音、素材'],
+      how:['ファイルをzipにまとめ、使い方PDFと利用規約を同梱','サムネに「何ができるか」が伝わる画面を使用','300〜1,500円帯で価格を設定。固定45円が重い低単価は避ける','デモ動画をXに投稿し、商品ページへ誘導','無料版を0円設定で配り、有料版へつなぐ'],
+      links:[['公式サイト','https://booth.pm'],['手数料改定の記事','https://www.gamebusiness.jp/article/2025/07/24/24711.html']] },
+    { id:'note', kind:'jp', name:'note', region:'日本向け', tag:'記事とセットで売れるプラットフォーム',
+      fee:'事務5% + 利用料10%', feeNote:'クレジットカード決済の場合。携帯キャリア決済は15%など、購入者の決済手段で事務手数料が変わる。振込は1回270円。',
+      feat:['有料記事、有料マガジン、メンバーシップ、チップ、定期購読マガジンと売り方が5形態','購入者の決済手段が多彩。クレジットカード、携帯キャリア、PayPay、Amazon Pay、PayPalに対応','無料記事で集客し、有料記事で深い内容を届ける流れを作りやすい','月額メンバーシップで、継続収入の土台を作れる'],
+      eg:['「ChatGPTやClaudeでアプリを作った全手順」の有料記事','プロンプト集とソースコードを同梱した解説','失敗談と収益化までの記録','メンバーシップで更新情報とテンプレートを継続配布'],
+      how:['無料記事でアプリの概要とデモを見せる','続きの実装手順を有料部分にする','有料部分に配布ファイルのリンクを置く','Xやスレッズで制作過程を発信し、記事へ誘導','有料マガジンに過去記事をまとめ、買い切りの導線にする'],
+      links:[['公式サイト','https://note.com'],['手数料の公式ヘルプ','https://www.help-note.com/hc/ja/articles/360011358873']] },
+    { id:'gumroad', kind:'global', name:'Gumroad', region:'海外向け', tag:'世界向けにデジタル商品を最短で売る',
+      fee:'10% + $0.50', feeNote:'直販の場合。Gumroad Discover経由の販売は一律30%。月額固定費なし。',
+      feat:['月額固定費なしで、売れた分だけ手数料','2025年1月から、世界の税の計算と納付をGumroad側が行う仕組み','割引コード、メール配信、アップセルの機能が揃う','アフィリエイト機能を内蔵し、紹介者に報酬を出せる','商品リンクを共有するだけで販売開始','デジタル商品に特化し、テンプレート、電子書籍、ツール配布と好相性'],
+      eg:['Notion、Figma、Excelのテンプレート','Chrome拡張、デスクトップツール','英語のプロンプトパック、電子書籍、チートシート','Next.jsなどのスターターキット'],
+      how:['英語で商品ページを作成','$9〜$29で価格を設定','割引コードをXやRedditの発信と組み合わせる','アフィリエイトを有効にし、紹介者に報酬を出して拡散','無料配布でメールアドレスを集める使い方も可能'],
+      links:[['公式サイト','https://gumroad.com'],['料金の解説記事','https://checkoutpage.com/blog/gumroad-fees']] },
+    { id:'lemon', kind:'global', name:'Lemon Squeezy', region:'海外向け', tag:'ライセンス管理まで任せられる販売基盤',
+      fee:'5% + $0.50', feeNote:'基本料率。地域や決済手段によって追加の手数料がかかる場合がある。',
+      feat:['ストア、ライセンスキー、ダウンロード配信、アフィリエイトが一式','単発払いと継続課金を同じ商品内で併用','95通貨に対応し、135か国以上の購入者が決済可能','各国の税の計算と納付を代行','APIでアプリ側の認証と連携','独自ドメインでストアを公開可能','Stripe傘下。日本を含む国で銀行払い出しに対応'],
+      eg:['ライセンスキー付きのPCソフト、Macユーティリティ','小規模なSaaS(月額課金のWebツール)','年額プランのテンプレート集、プラグイン','オンライン講座、メンバーシップ'],
+      how:['商品ごとにライセンスキーを自動発行し、アプリ側で認証','買い切り版と月額版を同じ商品内に用意','自分のドメインでストアを公開','アフィリエイトで紹介者を募る','購入メールでダウンロードと認証手順を案内'],
+      links:[['公式サイト','https://www.lemonsqueezy.com'],['公式ヘルプ','https://lemonsqueezy.com/help']] },
+    { id:'itch', kind:'global', name:'itch.io', region:'海外向け', tag:'ゲームとツールの個人マーケット',
+      fee:'初期値10%', feeNote:'運営への分配率は自分で変更可能。決済会社の手数料は別にかかる。',
+      feat:['運営への分配率を自分で設定できる','買い手が金額を決める「Pay What You Want」形式が使える','小さな個人制作でも見つけてもらいやすい','クレジットカード情報を同社が保持しない設計','セールやバンドル企画で露出を伸ばせる','決済は、自分で受け取る方式とitch.io経由の方式から選択'],
+      caution:'itch.io経由で受け取る支払い方式では、2025年9月に支払い遅延の報告があった。',
+      eg:['AIと作ったブラウザゲーム、パズル','ドット絵、効果音、UIパーツ','ツール、ゲームジャム参加作品','コミック、TRPG用の素材'],
+      how:['ブラウザ版を無料公開して遊んでもらう','拡張版やサポート版を有料に','価格を「$3以上、好きな額で購入」にして気軽に買える形へ','バンドルやセールの企画に参加','ゲームジャムに作品を出して評判を広げる'],
+      links:[['支払いの公式ドキュメント','https://itch.io/docs/creators/payments'],['支払い遅延の報道','https://automaton-media.com/articles/newsjp/itchio-20250926-359364']] },
+    { id:'steam', kind:'store', name:'Steam', region:'ストア型', tag:'PCゲームの巨大市場',
+      fee:'30%', feeNote:'1作品ごとに登録料$100(売上$1,000で返金)。累計売上$10Mで25%、$50Mで20%に下がる。',
+      feat:['PCゲーム市場で圧倒的な集客力','大型セールの時期に売上が伸びやすい','Steamworksで統計、ストアページ、実績機能などの開発者ツールが使える','累計売上に応じて手数料率が30%、25%、20%と階段式に下がる','世界中のPCユーザーに同時に届く'],
+      eg:['本格的なPCゲーム(アクション、パズル、ローグライク、ノベル)','追加ステージやキャラのDLC','独立したサウンドトラック'],
+      how:['Steamworksのアカウントを作り、$100で1作品分の枠を取得','説明文、スクリーンショット、トレーラーでストアページを整える','公開前からウィッシュリスト登録を集める','発売日の初動を作る','大型セールに合わせて割引を設定'],
+      links:[['登録料の公式ドキュメント','https://partner.steamgames.com/doc/gettingstarted/appfee'],['Steamworks','https://partner.steamgames.com']] },
+    { id:'apple', kind:'store', name:'App Store', region:'ストア型', tag:'iPhoneユーザーに向けた課金アプリ',
+      fee:'15%', feeNote:'小規模事業者向けプログラム適用時。Apple Developer Programの年会費は$99。',
+      feat:['世界中のiPhoneユーザーに届き、課金への抵抗が比較的低い市場','年間収益100万ドル以下の小規模事業者は手数料15%。新規開発者も対象','サブスクは2年目以降も15%','日本ではスマホ新法の全面施行(2025年12月18日)で、アプリ外リンク決済(15%)や代替マーケットプレイスが選択可能に','標準のApple決済は最大26%(ストア21%と決済5%)','Appleのブランドとレビューによる信頼感'],
+      eg:['習慣化、家計簿、タイマー、メモ、ウィジェットなどの実用アプリ','AIチャット系、画像加工系のサブスクアプリ','特定の趣味に特化した記録アプリ'],
+      how:['Apple Developer Programに登録','小規模事業者向けプログラムを申請して手数料15%に','買い切り、アプリ内課金、サブスクから料金モデルを選ぶ','アプリ外リンク決済を含めた課金導線を検討','デモ動画をSNSで出し、ストアのリンクへ誘導'],
+      links:[['Apple Developer Program','https://developer.apple.com/programs/'],['小規模事業者向けプログラムの発表','https://www.businesswire.com/news/home/20201118005376/en/Apple-Announces-App-Store-Small-Business-Program'],['日本の手数料変更の解説','https://www.itmedia.co.jp/news/article/2512/18/1251218081/']] },
+    { id:'google', kind:'store', name:'Google Play', region:'ストア型', tag:'Androidユーザーに広く届く、登録料が安い',
+      fee:'15%', feeNote:'最初の100万ドルまで。登録料$25は1回のみで年会費はなし。',
+      feat:['年会費なし。無料アプリなら、アカウント費用以外の負担がない','手数料は課金が発生したときだけ','サブスクは売上規模にかかわらず初日から15%','Androidユーザーの幅広さが強み','手数料の対象となる開発者の99%が、15%以下の枠を使える'],
+      caution:'個人アカウントは、公開前にクローズドテストの期間が設けられている。',
+      eg:['iOS版と同じ実用アプリのAndroid版','広告付きの無料アプリ、サブスク型の学習アプリ','Androidならではのウィジェット、ホーム画面系アプリ'],
+      how:['$25を払ってデベロッパーアカウントを登録','15%の手数料枠に登録','クローズドテストを実施','日本語と英語でストア説明文を用意','Flutterなどで作り、iOS版と同時に出す'],
+      links:[['Play Console','https://play.google.com/console'],['登録と手数料の公式ヘルプ','https://support.google.com/googleplay/android-developer/answer/14659200'],['サービス手数料の公式ヘルプ','https://support.google.com/googleplay/android-developer/answer/112622']] }
+  ];
+
+  var MATCH = {
+    web:{label:'Webアプリ・小さなSaaS', picks:[['lemon','第一候補','月額や年額の課金、ライセンス管理、日本を含む銀行払い出しに対応'],['gumroad','次点','商品ページを作ってリンクを共有するだけで売り出せる'],['note','併用','作り方の記事で集客し、解説と配布をセットにできる']]},
+    mobile:{label:'スマホアプリ', picks:[['apple','第一候補','小規模事業者向けの手数料15%で、買い切りもサブスクも選べる'],['google','同時展開','登録料$25の1回のみ。Androidユーザーにも届く'],['note','併用','開発の記録や作り方の記事でアプリの認知を広げられる']]},
+    pc:{label:'PC用ツール', picks:[['booth','第一候補','zipで配布でき、日本の買い手に届く。0円設定で無料版も出せる'],['lemon','海外向け','ライセンスキーの発行と認証をまとめて任せられる'],['gumroad','海外向け','リンクを共有するだけで英語圏にも売り出せる']]},
+    game:{label:'ゲーム', picks:[['itch','第一候補','小さな作品を試しやすく、買い手が金額を決める形式も使える'],['steam','次の舞台','手応えが出たら、集客力の大きいPCゲーム市場へ'],['booth','日本向け','日本のクリエイター層に向けて配布や販売ができる']]},
+    template:{label:'テンプレート・素材', picks:[['booth','第一候補','素材やテンプレートを探す買い手が集まる'],['gumroad','海外向け','英語のテンプレート販売と割引コードが相性よし'],['note','併用','使い方の解説記事とセットにすると価値が伝わる']]},
+    vr:{label:'VRChat向け3D', picks:[['booth','第一候補','アバターや衣装の販売が特に盛んな市場'],['gumroad','海外向け','デジタル商品として海外のユーザーにも届けられる']]},
+    know:{label:'ノウハウ・作り方', picks:[['note','第一候補','無料記事で集客し、有料記事で深い内容を届ける流れが作れる'],['gumroad','海外向け','電子書籍やチートシートとして英語圏にも販売できる'],['booth','併用','PDFやテンプレートをダウンロード商品として並べられる']]}
+  };
+
+  var FLOW = [
+    ['ファイルを整える','動作確認を済ませ、使い方と利用条件の文書を同梱。開きやすい形式にまとめる。'],
+    ['商品ページを作る','サムネイルは「何ができるか」が一目でわかる画面。デモ動画と説明文を添える。'],
+    ['価格を決める','手数料を引いた手取りから逆算。上の比較表で、価格ごとの残る額を確認できる。'],
+    ['公開する','最初は1つの販売先に絞って出し、反応を見る。'],
+    ['SNSで知らせる','XやスレッズでデモやAIを使った制作過程を発信し、商品ページのリンクへ誘導。'],
+    ['反応を見て磨く','質問やレビューをもとに、説明文、サムネイル、価格を見直す。無料版と有料版の出し分けも試せる。']
+  ];
+
+  var COMBOS = [
+    {t:'まず1本売る', flow:[['note','解説記事(無料から有料へ)'],['booth','BOOTHでツール配布',1],['x','X・スレッズで告知']]},
+    {t:'海外にも広げる', flow:[['p','英語の商品ページ'],['g','Gumroad または Lemon Squeezy',1],['a','アフィリエイトで拡散']]},
+    {t:'ゲームを育てる', flow:[['i','itch.ioで無料版を公開'],['r','反応を確認'],['s','Steamで本格版',1]]},
+    {t:'継続収益を狙う', flow:[['a','App Store',1],['g','Google Play',1],['s','サブスク課金']]}
+  ];
+
+  var LINKS = [
+    {t:'販売先の公式ページ', items:[['BOOTH','https://booth.pm'],['note','https://note.com'],['Gumroad','https://gumroad.com'],['Lemon Squeezy','https://www.lemonsqueezy.com'],['itch.io','https://itch.io'],['Steamworks','https://partner.steamgames.com'],['Apple Developer Program','https://developer.apple.com/programs/'],['Google Play Console','https://play.google.com/console']]},
+    {t:'手数料の根拠になった資料', items:[['note 手数料の公式ヘルプ','https://www.help-note.com/hc/ja/articles/360011358873'],['BOOTH 手数料改定の記事','https://www.gamebusiness.jp/article/2025/07/24/24711.html'],['Google Play サービス手数料','https://support.google.com/googleplay/android-developer/answer/112622'],['Steam 登録料の公式ドキュメント','https://partner.steamgames.com/doc/gettingstarted/appfee'],['itch.io 支払いの公式ドキュメント','https://itch.io/docs/creators/payments'],['Gumroad 料金の解説記事','https://checkoutpage.com/blog/gumroad-fees']]},
+    {t:'日本のスマホ新法と手数料', items:[['公正取引委員会 スマホ法のページ','https://www.jftc.go.jp/msca/'],['ITmedia AppleとGoogleの手数料比較','https://www.itmedia.co.jp/news/article/2512/18/1251218081/'],['GIGAZINE 両社の対応まとめ','https://gigazine.net/news/20251218-msca-apple-google'],['Apple 小規模事業者向けプログラムの発表','https://www.businesswire.com/news/home/20201118005376/en/Apple-Announces-App-Store-Small-Business-Program']]}
+  ];
+
+  function host(u){ try{ return new URL(u).host; }catch(e){ return u; } }
+
+  /* ---------- スムーズ移動 ---------- */
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[data-go]');
+    if(!a) return;
+    e.preventDefault();
+    var t = document.getElementById(a.getAttribute('data-go'));
+    if(t) t.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'});
+  });
+
+  /* ---------- ルート図 ---------- */
+  var LN = [
+    {id:'a', y:18,  t:'ダウンロード販売型', s1:'BOOTH ・ note ・ Gumroad', s2:'Lemon Squeezy ・ itch.io', g:'売れた分だけ手数料'},
+    {id:'b', y:150, t:'アプリストア型', s1:'App Store ・ Google Play', s2:'', g:'小規模事業者向けは15%'},
+    {id:'c', y:282, t:'PCゲームストア型', s1:'Steam', s2:'', g:'1作品$100と手数料30%'}
+  ];
+  function buildSvg(){
+    var s = '<svg id="routeSvg" viewBox="0 0 880 392" role="group" aria-label="作ったアプリが3つの販売ルートを通って買い手に届く図">';
+    LN.forEach(function(l){
+      var cy = l.y + 40;
+      var d = 'M170,196 C245,196 225,'+cy+' 300,'+cy+' L580,'+cy+' C655,'+cy+' 635,196 710,196';
+      s += '<g class="lane" data-lane="'+l.id+'" tabindex="0" role="button" aria-pressed="false" aria-label="'+l.t+'">';
+      s += '<path class="rail" d="'+d+'"/>';
+      for(var i=0;i<3;i++){
+        s += '<circle class="dot" r="5" cx="0" cy="0"><animateMotion dur="6s" begin="'+(i===0?'0s':'-'+(i*2)+'s')+'" repeatCount="indefinite" path="'+d+'"/></circle>';
+      }
+      s += '<rect class="box" x="300" y="'+l.y+'" width="280" height="80" rx="16"/>';
+      s += '<text class="lt t-d" x="318" y="'+(l.y+29)+'">'+l.t+'</text>';
+      s += '<text class="ls t-b" x="318" y="'+(l.y+50)+'">'+l.s1+'</text>';
+      if(l.s2) s += '<text class="ls t-b" x="318" y="'+(l.y+67)+'">'+l.s2+'</text>';
+      s += '<text class="lg t-b" x="300" y="'+(l.y+104)+'">'+l.g+'</text>';
+      s += '</g>';
+    });
+    s += '<rect class="node" x="0" y="136" width="170" height="120" rx="18"/>';
+    s += '<text class="node-t t-d" x="85" y="190" text-anchor="middle">作ったアプリ</text>';
+    s += '<text class="node-s t-b" x="85" y="212" text-anchor="middle">Web ・ スマホ ・ PC</text>';
+    s += '<text class="node-s t-b" x="85" y="230" text-anchor="middle">ゲーム ・ 素材</text>';
+    s += '<rect class="node" x="710" y="136" width="170" height="120" rx="18"/>';
+    s += '<text class="node-t t-d" x="795" y="190" text-anchor="middle">買い手</text>';
+    s += '<text class="node-s t-b" x="795" y="212" text-anchor="middle">購入 ・ ダウンロード</text>';
+    s += '<text class="node-s t-b" x="795" y="230" text-anchor="middle">アプリ内課金</text>';
+    s += '</svg>';
+    $('svgWrap').innerHTML = s;
+    if(reduce){ var sv = $('routeSvg'); if(sv.pauseAnimations) sv.pauseAnimations(); }
+  }
+
+  function renderPanel(id){
+    var L = LANES[id];
+    var chips = L.ps.map(function(p){ return '<a class="chip-link" href="#p-'+p[0]+'" data-go="p-'+p[0]+'">'+p[1]+'</a>'; }).join('');
+    var fees = L.fees.map(function(f){ return '<li>'+f+'</li>'; }).join('');
+    var ease = '';
+    for(var i=1;i<=3;i++) ease += '<i class="'+(i<=L.ease?'on':'')+'"></i>';
+    $('lanePanel').innerHTML =
+      '<div class="panel-head"><h3>'+L.title+'</h3><span class="tag">'+L.tag+'</span></div>'+
+      '<p>'+L.summary+'</p>'+
+      '<div class="panel-grid">'+
+        '<div><h4>代表の販売先</h4><div class="chips">'+chips+'</div></div>'+
+        '<div><h4>手数料の目安</h4><ul>'+fees+'</ul></div>'+
+        '<div><h4>向いているもの</h4><p style="font-size:.9375rem">'+L.fit+'</p></div>'+
+        '<div><h4>公開までの手軽さ(目安)</h4><div class="ease">'+ease+'<span>'+L.easeNote+'</span></div></div>'+
+      '</div>';
+  }
+  function selectLane(id){
+    document.querySelectorAll('#routeSvg .lane').forEach(function(g){
+      var on = g.getAttribute('data-lane') === id;
+      g.classList.toggle('active', on);
+      g.classList.toggle('dim', !on);
+      g.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    document.querySelectorAll('.m-lane').forEach(function(b){
+      b.setAttribute('aria-pressed', b.getAttribute('data-lane') === id ? 'true' : 'false');
+    });
+    renderPanel(id);
+  }
+  buildSvg();
+  document.addEventListener('click', function(e){
+    var g = e.target.closest('#routeSvg .lane, .m-lane');
+    if(g) selectLane(g.getAttribute('data-lane'));
+  });
+  document.addEventListener('keydown', function(e){
+    if((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('#routeSvg .lane')){
+      e.preventDefault(); selectLane(e.target.getAttribute('data-lane'));
+    }
+  });
+  selectLane('a');
+
+  /* ---------- 手取りシミュレーター ---------- */
+  var SIM = [
+    {id:'booth', name:'BOOTH', rule:'5.6% + 45円', fee:function(p){ return p*0.056 + 45; }},
+    {id:'note', name:'note', rule:'事務5% + 利用料10%', fee:function(p){ var o=Math.floor(p*0.05); return o + Math.floor((p-o)*0.10); }},
+    {id:'gumroad', name:'Gumroad', rule:'10% + $0.50', fee:function(p,r){ return p*0.10 + 0.5*r; }},
+    {id:'lemon', name:'Lemon Squeezy', rule:'5% + $0.50', fee:function(p,r){ return p*0.05 + 0.5*r; }},
+    {id:'itch', name:'itch.io', rule:'10% + 決済2.9% + $0.30', fee:function(p,r){ return p*0.10 + p*0.029 + 0.30*r; }},
+    {id:'steam', name:'Steam', rule:'30%', fee:function(p){ return p*0.30; }},
+    {id:'apple', name:'App Store', rule:'15%(小規模事業者)', fee:function(p){ return p*0.15; }},
+    {id:'google', name:'Google Play', rule:'15%', fee:function(p){ return p*0.15; }}
+  ];
+  var rowsEl = $('rows');
+  rowsEl.innerHTML = SIM.map(function(s){
+    return '<div class="row" id="r-'+s.id+'">'+
+      '<div class="row-name"><b>'+s.name+'</b><small>'+s.rule+'</small></div>'+
+      '<div class="bar" aria-hidden="true"><div class="keep"></div></div>'+
+      '<div class="nums"></div></div>';
+  }).join('');
+  function calc(){
+    var p = parseFloat($('priceNum').value) || 0;
+    var r = parseFloat($('fx').value) || 150;
+    if(p < 1) p = 1;
+    var res = SIM.map(function(s){
+      var f = Math.min(s.fee(p, r), p);
+      return {s:s, fee:f, net:p - f, pct:f / p * 100};
+    });
+    var best = res[0], worst = res[0];
+    res.forEach(function(x){ if(x.net > best.net) best = x; if(x.net < worst.net) worst = x; });
+    res.forEach(function(x){
+      var row = $('r-' + x.s.id);
+      row.querySelector('.keep').style.width = (x.net / p * 100).toFixed(2) + '%';
+      row.querySelector('.nums').innerHTML = '手数料 ' + yen(x.fee) + '(' + x.pct.toFixed(1) + '%)<br>手取り <b>' + yen(x.net) + '</b>';
+      var nm = row.querySelector('.row-name b');
+      var old = nm.querySelector('.badge-best'); if(old) old.remove();
+      if(x === best){ var b = document.createElement('span'); b.className = 'badge-best'; b.textContent = '最大'; nm.appendChild(b); }
+    });
+    $('simSum').innerHTML = yen(p) + 'の商品で手取りが最も大きいのは <b>' + best.s.name + '</b> の ' + yen(best.net) + '。最も小さいのは <b>' + worst.s.name + '</b> の ' + yen(worst.net) + '。差は ' + yen(best.net - worst.net) + '。';
+  }
+  $('price').addEventListener('input', function(){ $('priceNum').value = this.value; calc(); });
+  $('priceNum').addEventListener('input', function(){ var v = parseFloat(this.value); if(v >= 300 && v <= 10000) $('price').value = v; calc(); });
+  $('fx').addEventListener('input', calc);
+  calc();
+
+  /* ---------- 作ったもので選ぶ ---------- */
+  var nameOf = {}; PL.forEach(function(p){ nameOf[p.id] = p.name; });
+  $('pills').innerHTML = Object.keys(MATCH).map(function(k){
+    return '<button class="pill" data-m="'+k+'" aria-pressed="false">'+MATCH[k].label+'</button>';
+  }).join('');
+  function selectMatch(k){
+    document.querySelectorAll('#pills .pill').forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-m') === k ? 'true' : 'false'); });
+    $('picks').innerHTML = MATCH[k].picks.map(function(x, i){
+      return '<div class="pick'+(i===0?' first':'')+'">'+
+        '<div class="rank">'+(i===0?'▶ ':'')+x[1]+'</div>'+
+        '<div><h3>'+nameOf[x[0]]+'</h3><p>'+x[2]+'</p></div>'+
+        '<a class="go" href="#p-'+x[0]+'" data-go="p-'+x[0]+'">詳細を見る</a></div>';
+    }).join('');
+  }
+  $('pills').addEventListener('click', function(e){ var b = e.target.closest('.pill'); if(b) selectMatch(b.getAttribute('data-m')); });
+  selectMatch('pc');
+
+  /* ---------- 販売先カード ---------- */
+  function li(arr){ return arr.map(function(x){ return '<li>'+x+'</li>'; }).join(''); }
+  $('cards').innerHTML = PL.map(function(p){
+    var links = p.links.map(function(l){ return '<a href="'+l[1]+'" target="_blank" rel="noopener noreferrer">'+l[0]+' ↗</a>'; }).join('');
+    return '<article class="card reveal" id="p-'+p.id+'" data-kind="'+p.kind+'">'+
+      '<div class="card-top"><h3>'+p.name+'</h3><span class="chip-k">'+p.region+'</span></div>'+
+      '<p class="card-tag">'+p.tag+'</p>'+
+      '<div class="fee"><span class="fee-l">手数料</span><span class="fee-v">'+p.fee+'</span><span class="fee-n">'+p.feeNote+'</span></div>'+
+      '<h4>特徴</h4><ul class="feat">'+li(p.feat)+'</ul>'+
+      (p.caution ? '<p class="caution">'+p.caution+'</p>' : '')+
+      '<h4>売るものの例</h4><ul class="eg">'+li(p.eg)+'</ul>'+
+      '<h4>売り方のサンプル</h4><ol class="steps">'+li(p.how)+'</ol>'+
+      '<div class="card-links">'+links+'</div></article>';
+  }).join('');
+  $('filters').addEventListener('click', function(e){
+    var b = e.target.closest('.pill'); if(!b) return;
+    var f = b.getAttribute('data-f');
+    document.querySelectorAll('#filters .pill').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    document.querySelectorAll('#cards .card').forEach(function(c){ c.hidden = !(f === 'all' || c.getAttribute('data-kind') === f); });
+  });
+
+  /* ---------- 出品の流れ ---------- */
+  var tl = $('tl');
+  FLOW.forEach(function(f, i){
+    var d = document.createElement('div');
+    d.className = 'tl-step';
+    d.innerHTML = '<span class="n">'+(i+1)+'</span><h3>'+f[0]+'</h3><p>'+f[1]+'</p>';
+    tl.appendChild(d);
+  });
+  var steps = tl.querySelectorAll('.tl-step');
+  function tlUpdate(){
+    var vh = window.innerHeight, mark = vh * 0.62, fillTo = 0;
+    var top0 = tl.getBoundingClientRect().top;
+    steps.forEach(function(s){
+      var r = s.getBoundingClientRect();
+      var passed = r.top < mark;
+      s.classList.toggle('passed', passed);
+      if(passed) fillTo = r.top - top0 + 22;
+    });
+    var total = tl.getBoundingClientRect().height - 40;
+    $('tlFill').style.height = Math.max(0, Math.min(fillTo, total)) + 'px';
+  }
+  var tick = false;
+  window.addEventListener('scroll', function(){ if(!tick){ tick = true; requestAnimationFrame(function(){ tlUpdate(); tick = false; }); } }, {passive:true});
+  window.addEventListener('resize', tlUpdate);
+  tlUpdate();
+
+  /* ---------- 組み合わせ ---------- */
+  $('comboList').innerHTML = COMBOS.map(function(c){
+    var parts = c.flow.map(function(n, i){
+      return (i ? '<span class="arrow" aria-hidden="true">▶</span>' : '') + '<span class="node-pill'+(n[2]?' hi':'')+'">'+n[1]+'</span>';
+    }).join('');
+    return '<div class="combo reveal"><h3>'+c.t+'</h3><div class="combo-flow">'+parts+'</div></div>';
+  }).join('');
+
+  /* ---------- リンク ---------- */
+  $('linkGroups').innerHTML = LINKS.map(function(g){
+    return '<div class="lg reveal"><h3>'+g.t+'</h3><ul>'+g.items.map(function(l){
+      return '<li><a href="'+l[1]+'" target="_blank" rel="noopener noreferrer"><span>'+l[0]+'</span><small>'+host(l[1])+'</small></a></li>';
+    }).join('')+'</ul></div>';
+  }).join('');
+
+  /* ---------- 表示アニメーションとナビの現在位置 ---------- */
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:0.12});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+    var links = {};
+    document.querySelectorAll('.nav-links a').forEach(function(a){ links[a.getAttribute('data-go')] = a; });
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          Object.keys(links).forEach(function(k){ links[k].classList.toggle('on', k === e.target.id); });
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px'});
+    ['map','sim','match','platforms','flow','links'].forEach(function(id){ var el = $(id); if(el) spy.observe(el); });
+  }
+})();
+</script>
+
+</body>
+</html>
